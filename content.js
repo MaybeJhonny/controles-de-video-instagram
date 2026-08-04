@@ -1,11 +1,11 @@
-(function () {
+﻿(function () {
   "use strict";
 
   const bars = new Map(); // video -> { container, seek, time, vol, play, dragging, visible }
   const observed = new WeakSet();
   let layer = null;
 
-  let prefVolPct = 100; // volume lembrado entre videos (0-100)
+  let prefVolPct = 10; // volume lembrado entre videos (0-100)
 
   let fsVideo = null;
   let classic = null; // barra classica da tela cheia
@@ -115,7 +115,7 @@
       '<input class="igc-c-seek" type="range" min="0" max="100" step="any" value="0">' +
       '<button class="igc-c-rl" title="Girar esquerda">&#8634;</button>' +
       '<button class="igc-c-rr" title="Girar direita">&#8635;</button>' +
-      '<input class="igc-c-vol" type="range" min="0" max="100" step="1" value="100" title="Volume">' +
+      '<input class="igc-c-vol" type="range" min="0" max="100" step="1" value="10" title="Volume">' +
       '<button class="igc-c-fs" title="Sair da tela cheia">&#9974;</button>';
     host.appendChild(bar);
 
@@ -232,7 +232,7 @@
       '<button class="igc-play" title="Play/Pause">&#9654;</button>' +
       '<span class="igc-time">0:00 / 0:00</span>' +
       '<span class="igc-spacer"></span>' +
-      '<input class="igc-vol" type="range" min="0" max="100" step="1" value="100" title="Volume (lembrado entre videos)">' +
+      '<input class="igc-vol" type="range" min="0" max="100" step="1" value="10" title="Volume (lembrado entre videos)">' +
       '<button class="igc-rl" title="Girar esquerda">&#8634;</button>' +
       '<button class="igc-rr" title="Girar direita">&#8635;</button>' +
       '<button class="igc-fs" title="Tela cheia">&#9974;</button>' +
@@ -408,3 +408,4 @@
     }
   });
 })();
+
