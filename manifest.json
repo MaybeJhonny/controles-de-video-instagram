@@ -1,0 +1,15 @@
+{
+  "manifest_version": 3,
+  "name": "IG Controles Extra",
+  "version": "1.0.0",
+  "description": "Controles extras para videos do Instagram: barra de tempo (seek), volume ampliado, rotacao de 90 graus e tela cheia.",
+  "content_scripts": [
+    {
+      "matches": ["*://*.instagram.com/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle",
+      "all_frames": false
+    }
+  ]
+}

@@ -1,0 +1,152 @@
+/* ---------- barra sobre o video (fora da tela cheia) ---------- */
+#igc-layer {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2147483647;
+}
+
+.igc-container {
+  position: fixed;
+  pointer-events: none;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.igc-strip {
+  pointer-events: auto;
+  width: 100%;
+  box-sizing: border-box;
+  padding: 8px 8px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.78), rgba(0, 0, 0, 0));
+  opacity: 0.55;
+  transition: opacity 0.15s ease;
+  font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+}
+
+.igc-strip:hover {
+  opacity: 1;
+}
+
+.igc-seek {
+  width: 100%;
+  height: 4px;
+  accent-color: #e1306c;
+  cursor: pointer;
+  margin: 0;
+}
+
+.igc-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-size: 11px;
+}
+
+.igc-controls .igc-spacer {
+  flex: 1;
+}
+
+.igc-controls button {
+  background: rgba(255, 255, 255, 0.18);
+  border: none;
+  color: #fff;
+  border-radius: 6px;
+  min-width: 30px;
+  height: 28px;
+  padding: 0 7px;
+  cursor: pointer;
+  font-size: 14px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.igc-controls button:hover {
+  background: rgba(225, 48, 108, 0.65);
+}
+
+.igc-vol {
+  width: 70px;
+  height: 18px;
+  accent-color: #e1306c;
+  cursor: pointer;
+}
+
+.igc-time {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  opacity: 0.95;
+}
+
+/* ---------- tela cheia: mostra so o video + barra classica ---------- */
+.igc-fs-host {
+  background: #000 !important;
+}
+
+/* esconde os overlays do Instagram dentro da tela cheia (legenda, botoes, etc.) */
+.igc-fs-host > :not(video):not(.igc-classic) {
+  visibility: hidden !important;
+}
+
+/* player classico (estilo navegador) */
+.igc-classic {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2147483647;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-sizing: border-box;
+  padding: 12px 18px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0));
+  color: #fff;
+  font-family: system-ui, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 13px;
+}
+
+.igc-classic button {
+  background: transparent;
+  border: none;
+  color: #fff;
+  cursor: pointer;
+  font-size: 17px;
+  line-height: 1;
+  padding: 4px 6px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.igc-classic button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.igc-c-time {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  opacity: 0.95;
+}
+
+.igc-c-seek {
+  flex: 1;
+  height: 5px;
+  accent-color: #fff;
+  cursor: pointer;
+}
+
+.igc-c-vol {
+  width: 90px;
+  accent-color: #fff;
+  cursor: pointer;
+}
