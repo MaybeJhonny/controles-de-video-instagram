@@ -226,18 +226,18 @@
     if (bottom > window.innerHeight) bottom = window.innerHeight;
     return right - left >= r.width * 0.6 && bottom - top >= r.height * 0.6;
   }
-  // esta realmente por cima naquele ponto? (nao coberto por modal/outro elemento)
+  // esconde so quando o ponto do video cai dentro de um modal e o video nao faz parte dele
   function isOnTop(v) {
     const s = slotRect(v);
     const cx = (s.left + s.right) / 2;
-    const cy = s.top + s.height * 0.75; // ponto abaixo da barra, no corpo do video
+    const cy = s.top + s.height * 0.75; // ponto no corpo do video, abaixo da barra
     if (cx <= 0 || cy <= 0 || cx >= window.innerWidth || cy >= window.innerHeight) return true;
     const hit = document.elementFromPoint(cx, cy);
     if (!hit) return true;
-    if (hit === v || v.contains(hit) || hit.contains(v)) return true;
-    const wrap = v.parentElement;
-    if (wrap && wrap.contains(hit)) return true;
-    return false; // algo estranho por cima (modal, outro video) -> esconde
+    const dialog = hit.closest('[role="dialog"]');
+    if (!dialog) return true; // nada de modal por cima -> mostra
+    if (dialog.contains(v)) return true; // o video esta dentro desse modal -> mostra
+    return false; // o ponto caiu num modal e o video esta atras -> esconde
   }
 
   function checkVisibility() {
