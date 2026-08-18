@@ -199,21 +199,7 @@
   function isClip(val) {
     return val === "hidden" || val === "auto" || val === "scroll" || val === "clip";
   }
-  function isBehindModal(v) {
-    const dialogs = document.querySelectorAll('[role="dialog"]');
-    if (!dialogs.length) return false;
-    for (let i = 0; i < dialogs.length; i++) {
-      const d = dialogs[i];
-      if (d.contains(v)) return false; // o video esta dentro do modal -> em primeiro plano
-      const r = d.getBoundingClientRect();
-      // modal grande (comentarios) cobrindo boa parte da tela e o video nao esta nele -> atras
-      if (r.width * r.height > window.innerWidth * window.innerHeight * 0.3) return true;
-    }
-    return false;
-  }
-
   function computeVisible(v) {
-    if (isBehindModal(v)) return false;
     const r = slotRect(v);
     if (r.width < 160 || r.height < 120) return false;
     let left = r.left, top = r.top, right = r.right, bottom = r.bottom;
@@ -241,8 +227,25 @@
     return right - left >= r.width * 0.6 && bottom - top >= r.height * 0.6;
   }
   function checkVisibility() {
+    // escolhe UM video: o que esta tocando; se nenhum, o mais visivel.
+    let best = null;
+    let bestScore = -1;
     bars.forEach(function (o, v) {
-      o.visible = v.isConnected ? computeVisible(v) : false;
+      const ok = v.isConnected ? computeVisible(v) : false;
+      o.__on = ok;
+      if (!ok) return;
+      const r = slotRect(v);
+      const area =
+        Math.max(0, Math.min(r.right, window.innerWidth) - Math.max(r.left, 0)) *
+        Math.max(0, Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0));
+      const score = area + (v.paused ? 0 : 5000000000);
+      if (score > bestScore) {
+        bestScore = score;
+        best = v;
+      }
+    });
+    bars.forEach(function (o, v) {
+      o.visible = o.__on && v === best;
     });
   }
   setInterval(checkVisibility, 150);
