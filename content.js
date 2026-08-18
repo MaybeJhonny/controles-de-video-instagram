@@ -1,4 +1,4 @@
-﻿(function () {
+(function () {
   "use strict";
 
   const bars = new Map(); // video -> { container, seek, time, vol, play, dragging, visible }
@@ -40,8 +40,21 @@
 
   // ---------- posicao do video IGNORANDO a rotacao (usa o pai, que nao gira) ----------
   function slotRect(v) {
-    const p = v.parentElement || v;
-    return p.getBoundingClientRect();
+    // caixa real do video, sem o efeito da rotacao: o centro se mantem em transform central,
+    // e offsetWidth/Height dao o tamanho de layout (nao afetado por scale/rotate).
+    const r = v.getBoundingClientRect();
+    const w = v.offsetWidth || r.width;
+    const h = v.offsetHeight || r.height;
+    const cx = (r.left + r.right) / 2;
+    const cy = (r.top + r.bottom) / 2;
+    return {
+      left: cx - w / 2,
+      top: cy - h / 2,
+      right: cx + w / 2,
+      bottom: cy + h / 2,
+      width: w,
+      height: h,
+    };
   }
 
   // ---------- rotacao ----------
@@ -186,7 +199,21 @@
   function isClip(val) {
     return val === "hidden" || val === "auto" || val === "scroll" || val === "clip";
   }
+  function isBehindModal(v) {
+    const dialogs = document.querySelectorAll('[role="dialog"]');
+    if (!dialogs.length) return false;
+    for (let i = 0; i < dialogs.length; i++) {
+      const d = dialogs[i];
+      if (d.contains(v)) return false; // o video esta dentro do modal -> em primeiro plano
+      const r = d.getBoundingClientRect();
+      // modal grande (comentarios) cobrindo boa parte da tela e o video nao esta nele -> atras
+      if (r.width * r.height > window.innerWidth * window.innerHeight * 0.3) return true;
+    }
+    return false;
+  }
+
   function computeVisible(v) {
+    if (isBehindModal(v)) return false;
     const r = slotRect(v);
     if (r.width < 160 || r.height < 120) return false;
     let left = r.left, top = r.top, right = r.right, bottom = r.bottom;
@@ -408,4 +435,3 @@
     }
   });
 })();
-
