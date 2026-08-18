@@ -226,26 +226,24 @@
     if (bottom > window.innerHeight) bottom = window.innerHeight;
     return right - left >= r.width * 0.6 && bottom - top >= r.height * 0.6;
   }
+  // esta realmente por cima naquele ponto? (nao coberto por modal/outro elemento)
+  function isOnTop(v) {
+    const s = slotRect(v);
+    const cx = (s.left + s.right) / 2;
+    const cy = s.top + s.height * 0.75; // ponto abaixo da barra, no corpo do video
+    if (cx <= 0 || cy <= 0 || cx >= window.innerWidth || cy >= window.innerHeight) return true;
+    const hit = document.elementFromPoint(cx, cy);
+    if (!hit) return true;
+    if (hit === v || v.contains(hit) || hit.contains(v)) return true;
+    const wrap = v.parentElement;
+    if (wrap && wrap.contains(hit)) return true;
+    return false; // algo estranho por cima (modal, outro video) -> esconde
+  }
+
   function checkVisibility() {
-    // escolhe UM video: o que esta tocando; se nenhum, o mais visivel.
-    let best = null;
-    let bestScore = -1;
     bars.forEach(function (o, v) {
-      const ok = v.isConnected ? computeVisible(v) : false;
-      o.__on = ok;
-      if (!ok) return;
-      const r = slotRect(v);
-      const area =
-        Math.max(0, Math.min(r.right, window.innerWidth) - Math.max(r.left, 0)) *
-        Math.max(0, Math.min(r.bottom, window.innerHeight) - Math.max(r.top, 0));
-      const score = area + (v.paused ? 0 : 5000000000);
-      if (score > bestScore) {
-        bestScore = score;
-        best = v;
-      }
-    });
-    bars.forEach(function (o, v) {
-      o.visible = o.__on && v === best;
+      o.visible =
+        v.isConnected && computeVisible(v) && isOnTop(v);
     });
   }
   setInterval(checkVisibility, 150);
